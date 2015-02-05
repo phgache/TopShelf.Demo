@@ -12,21 +12,16 @@ namespace TopShelf.Demo
         {   
             // Configure container
             var container = new Container();
-            container.Register<IRunningService, RunningService>();
+            container.Register<IClock, Clock>();
 
             // Top shelf setup
             HostFactory.Run(
                 config =>
                     {
                         config.UseSimpleInjector(container);
-                        config.UseLog4Net();
+                        config.UseLog4Net("log4net.xml");
 
-                        config.BeforeInstall(() => HostLogger.Current.Get("Logger").Info("Installing service."));
-                        config.AfterInstall(() => HostLogger.Current.Get("Logger").Info("Service installed."));
-                        config.BeforeUninstall(() => HostLogger.Current.Get("Logger").Info("Uninstalling service."));
-                        config.AfterUninstall(() => HostLogger.Current.Get("Logger").Info("Service {0} uninstalled."));
-
-                        config.Service<RunningService>(
+                        config.Service<Clock>(
                             s =>
                                 {
                                     s.ConstructUsingSimpleInjector();
@@ -38,26 +33,6 @@ namespace TopShelf.Demo
                         config.SetDisplayName("TopShelf Demo");
                         config.SetServiceName("TopShelfDemo");
                     });
-        }
-    }
-
-    internal interface IRunningService
-    {
-        void Start();
-
-        void Stop();
-    }
-
-    internal class RunningService : IRunningService
-    {
-        public void Start()
-        {
-            
-        }
-
-        public void Stop()
-        {
-            
         }
     }
 }
